@@ -14,11 +14,11 @@ extension ContentView {
 }
 
 struct ContentView: View {
-    @State var redValue = Double.random(in: 0...255)
-    @State var greenValue = Double.random(in: 0...255)
-    @State var blueValue = Double.random(in: 0...255)
+    @State private var redValue = Double.random(in: 0...255)
+    @State private var greenValue = Double.random(in: 0...255)
+    @State private var blueValue = Double.random(in: 0...255)
     
-    @FocusState var focusedField: FieldType?
+    @FocusState private var focusedField: FieldType?
     
     var body: some View {
         ZStack {
