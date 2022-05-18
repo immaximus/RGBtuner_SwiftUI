@@ -9,18 +9,10 @@ import SwiftUI
 
 struct ColorTunerView: View {
     @Binding var value: Double
+    @State private var inputText = ""
+    @State private var isPresented = false
     
     let color: Color
-    
-    let numberFormatter: NumberFormatter = {
-        var nf = NumberFormatter()
-        nf.numberStyle = .decimal
-        nf.maximumFractionDigits = 0
-        nf.maximum = 255
-        nf.minimum = 0
-    
-        return nf
-    }()
     
     var body: some View {
         HStack {
@@ -30,12 +22,31 @@ struct ColorTunerView: View {
             Slider(value: $value, in: 0...255)
                 .tint(color)
                 .padding(.trailing, 5)
-            TextField("255", value: $value, formatter: numberFormatter)
+                .onAppear { inputText = "\(lround(value))" }
+                .onChange(of: value) { newValue in
+                    inputText = "\(lround(newValue))"
+                }
+            TextField("255", text: $inputText) { changed in
+                if !changed { isValid() }
+            }
                 .keyboardType(.decimalPad)
                 .textFieldStyle(.roundedBorder)
-                .fixedSize()
+                .fixedSize()               
+                .alert("Value should be from 0 to 255!", isPresented: $isPresented) {}
+                
         }
     }
+    
+    private func isValid() {
+        guard let tempValue = Double(inputText), (0...255).contains(tempValue) else {
+            isPresented.toggle()
+            value = 0
+            inputText = "0"
+            return
+        }
+        value = tempValue
+    }
+    
 }
 
 struct ColorTunerView_Previews: PreviewProvider {
