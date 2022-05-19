@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ColorTunerView: View {
     @Binding var value: Double
+    
     @State private var inputText = ""
     @State private var isPresented = false
     
@@ -16,24 +17,24 @@ struct ColorTunerView: View {
     
     var body: some View {
         HStack {
-            Text(String(format: "%.f", value))
+            Text("\(lround(value))")
+                .frame(width: 33, alignment: .leading)
                 .foregroundColor(.white)
-                .frame(minWidth: 5, idealWidth: 15, maxWidth: 33, alignment: .leading)
             Slider(value: $value, in: 0...255)
                 .tint(color)
-                .padding(.trailing, 5)
                 .onAppear { inputText = "\(lround(value))" }
                 .onChange(of: value) { newValue in
                     inputText = "\(lround(newValue))"
                 }
-            TextField("255", text: $inputText) { changed in
-                if !changed { isValid() }
+            TextField("255", text: $inputText) { _ in
+                withAnimation {
+                    isValid()
+                }
             }
-                .keyboardType(.decimalPad)
-                .textFieldStyle(.roundedBorder)
-                .fixedSize()               
-                .alert("Value should be from 0 to 255!", isPresented: $isPresented) {}
-                
+            .frame(width: 50, alignment: .trailing)
+            .textFieldStyle(.roundedBorder)
+            .keyboardType(.decimalPad)
+            .alert("Value should be from 0 to 255!", isPresented: $isPresented) {}
         }
     }
     
@@ -51,6 +52,9 @@ struct ColorTunerView: View {
 
 struct ColorTunerView_Previews: PreviewProvider {
     static var previews: some View {
-        ColorTunerView(value: .constant(100), color: .blue)
+        ZStack {
+            Color.gray
+            ColorTunerView(value: .constant(100), color: .blue)
+        }
     }
 }

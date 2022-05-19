@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension ContentView {
-    enum FieldType: Int {
+    private enum FieldType: Int {
         case red, green, blue
     }
 }
@@ -24,11 +24,15 @@ struct ContentView: View {
         ZStack {
             Color(.systemMint)
                 .ignoresSafeArea()
+                .onTapGesture {
+                    focusedField = nil
+                }
+            
             VStack(spacing: 20) {
                 ColorView(redValue: redValue,
                           greenValue: greenValue,
                           blueValue: blueValue)
-                .padding(.bottom, 50)
+                .padding(.bottom, 40)
                 
                 ColorTunerView(value: $redValue, color: .red)
                     .focused($focusedField, equals: .red)
@@ -78,18 +82,16 @@ struct ColorView: View {
     let blueValue: Double
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 20)
-            .foregroundColor(
-                Color(red: redValue / 255,
-                      green: greenValue / 255,
-                      blue: blueValue / 255)
-            )
-            .frame(width: UIScreen.main.bounds.width - 32,
-                   height: UIScreen.main.bounds.height * 0.15)
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(.white, lineWidth: 4)
-            )
+        Color(red: redValue / 255,
+              green: greenValue / 255,
+              blue: blueValue / 255)
+        .cornerRadius(20)
+        .frame(width: UIScreen.main.bounds.width - 32,
+               height: UIScreen.main.bounds.height * 0.15)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(.white, lineWidth: 4)
+        )
     }
 }
 
